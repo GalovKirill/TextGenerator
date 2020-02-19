@@ -8,8 +8,8 @@
         <TargetFramework>netcoreapp3.0</TargetFramework>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="OldCode\SRTG1" />
-    </ItemGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <PlatformTarget>x86</PlatformTarget>
+    </PropertyGroup>
 
 </Project>

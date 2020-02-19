@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TextGenerator
+﻿namespace TextGenerator
 {
     public static class K
     {

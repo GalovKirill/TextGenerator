@@ -1,60 +1,53 @@
 using System;
-using System.Collections;
 using System.Linq;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace TextGenerator
 {
-    class LongCharSetThread : ILoadStrategy
+    internal class LongCharSetThread : ILoadStrategy
     {
-        private Dictionary<SubString, long>[] _chars;
+        private Dictionary<int, long>[] _chars;
 
-        private int _concurrencyLevel = 4;
+        private const int ConcurrencyLevel = 4;
+
+        public LongCharSetThread()
+        {
+            SubstringEqualityComparer.Instance.Left = Program.Text;
+            SubstringEqualityComparer.Instance.Right = Program.Text;
+        }
 
             
         public void Load()
         {
             var readLen = Program.Text.Length - K.Value - 1;
-            Stopwatch timer = Stopwatch.StartNew();
-            var tasks = Enumerable.Range(1, _concurrencyLevel)
-            .Select(i => ((i-1) * readLen / _concurrencyLevel, i * readLen / _concurrencyLevel))
-            .Select(pair => Task.Run(() => Create(pair.Item1, pair.Item2)))
+            var timer = Stopwatch.StartNew();
+            Task<Dictionary<int, long>>[] tasks = Enumerable.Range(1, ConcurrencyLevel)
+            .Select(i => new { Start = (i-1) * readLen / ConcurrencyLevel, End = i * readLen / ConcurrencyLevel})
+            .Select(range => Task.Run(() => Create(range.Start, range.End)))
             .ToArray();
             
             Task.WaitAll(tasks);
 
-            Console.WriteLine($"waited seconds {timer.Elapsed}");
+            Console.WriteLine($"text load at {timer.Elapsed}");
 
             _chars = tasks.Select(t => t.Result).ToArray();
             
         }
 
-        private static Dictionary<SubString, long> Create(int start, int end)
+        private static Dictionary<int, long> Create(int start, int end)
         {
-            Dictionary<SubString, long> result = new Dictionary<SubString, long>(end - start);
+            var result = new Dictionary<int, long>(end - start, SubstringEqualityComparer.Instance);
             for(var i = start; i < end; i++)
             {
-                var c = Program.Text[i + K.Value + 1];
-                var subs = new SubString(i, Program.Text);
-                if (result.ContainsKey(subs))
-                {
-                    var cs = result[subs];
-                    result[subs] = cs.Add(c);
-                }
+                if (result.TryGetValue(i, out var cs))
+                    result[i] = cs.Add(Program.Text[i + K.Value]);
                 else
-                {
-                    result.Add(subs, c.ToLong());
-                }
+                    result.Add(i, Program.Text[i + K.Value].ToLong());
             }
             return result;
         }
-
-        static long Add(SubString subs, char c) => c.ToLong();
-
-        static long Update(SubString subs, long cs, char c) => cs.Add(c);
 
         public ICharGenerator GetResult()
         {

@@ -2,31 +2,23 @@ using System.Collections.Generic;
 
 namespace TextGenerator
 {
-    class MultiDicCharGenerator : ICharGenerator
+    internal class MultiDicCharGenerator : ICharGenerator
     {
-        private readonly Dictionary<SubString, long>[] _chars;
+        private readonly Dictionary<int, long>[] _chars;
 
-        public MultiDicCharGenerator(Dictionary<SubString, long>[] chars)
+        public MultiDicCharGenerator(Dictionary<int, long>[] chars)
         {
             _chars = chars;
         }
 
-        public char Next(SubString subs)
+        public char Next(int shift)
         {
             long cs = 0;
 
-            foreach (var dic in _chars)
+            foreach (Dictionary<int, long> dic in _chars)
             {
-                if(dic.TryGetValue(subs, out var l))
-                {
+                if(dic.TryGetValue(shift, out var l)) 
                     cs |= l;
-                }
-            }
-
-            if(cs == 0)
-            {
-                System.Console.WriteLine(" osibka"+subs);
-                return 'а';
             }
 
             return cs.RandomElem();

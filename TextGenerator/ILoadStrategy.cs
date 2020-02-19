@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TextGenerator
+﻿namespace TextGenerator
 {
     public interface ILoadStrategy
     {

@@ -63,13 +63,13 @@ namespace TextGenerator
         {
             unsafe
             {
-                var readOnlySpan = _source.AsSpan(_startIndex, K.Value);
+                ReadOnlySpan<char> readOnlySpan = _source.AsSpan(_startIndex, K.Value);
                 fixed (char* src = readOnlySpan)
                 {
-                    int hash1 = 5381;
-                    int hash2 = hash1;
+                    var hash1 = 5381;
+                    var hash2 = hash1;
                     int c;
-                    for (int i = 0; i < readOnlySpan.Length - 1; i+=2)
+                    for (var i = 0; i < readOnlySpan.Length - 1; i+=2)
                     {
                         c = src[i];
                         hash1 = ((hash1 << 5) + hash1) ^ c;
@@ -78,7 +78,7 @@ namespace TextGenerator
                         c = src[i + 1];
                         hash2 = ((hash2 << 5) + hash2) ^ c;
                     }
-                    return hash1 + (hash2 * 1566083941);
+                    return hash1 + hash2 * 1566083941;
                 }
             }
         }
