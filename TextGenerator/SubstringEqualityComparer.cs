@@ -4,7 +4,7 @@ namespace TextGenerator
 {
     public class SubstringEqualityComparer : IEqualityComparer<int>
     {
-        public static readonly SubstringEqualityComparer Instance = new SubstringEqualityComparer();
+        public static readonly SubstringEqualityComparer Instance = new();
 
         private SubstringEqualityComparer()
         {

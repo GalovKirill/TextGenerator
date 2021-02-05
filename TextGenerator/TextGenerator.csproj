@@ -4,12 +4,18 @@
         <OutputType>Exe</OutputType>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <LangVersion>8</LangVersion>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <LangVersion>9</LangVersion>
+        <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <PlatformTarget>x86</PlatformTarget>
+      <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Update="res.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 
 </Project>

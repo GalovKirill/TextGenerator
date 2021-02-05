@@ -28,7 +28,7 @@ namespace TextGenerator
         public static bool BitFlagged(this long l, int bit) => ((1L << bit) & l) != 0;
         public static T RandomElem<T>(this IList<T> lst) => lst[R.Next(0, lst.Count)];
 
-        private static readonly List<char> Cs = new List<char>(64);
+        private static readonly List<char> Cs = new(64);
         public static char RandomElem(this long l)
         {
             Cs.Clear();   
